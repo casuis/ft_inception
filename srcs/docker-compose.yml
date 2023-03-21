@@ -1,0 +1,67 @@
+version: '2'
+
+networks:
+  Inception:
+    driver: bridge
+
+
+volumes:
+  wordpress:
+    driver: local
+    driver_opts:
+      o: 'bind'
+      type: 'none'
+      device: '/home/asimon/data/wordpress'
+  db:
+    driver: local
+    driver_opts:
+      o: 'bind'
+      type: 'none'
+      device: '/home/asimon/data/db'
+
+
+services:
+
+  mariadb:
+    build: ./MariaDB/
+    image: mariadb
+    container_name: mariadb
+    env_file:
+      - './.env'
+    volumes:
+      - db:/var/lib/mysql
+    networks:
+      - Inception
+    restart: always
+
+  wordpress:
+    depends_on:
+      - mariadb
+    build: ./Wordpress/
+    image: wordpress
+    container_name: wordpress
+    env_file:
+      - './.env'
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+      - Inception
+    restart: always
+
+  nginx:
+    depends_on:
+      - wordpress
+    build: ./Nginx/
+    image: nginx
+    container_name: nginx
+    env_file: 
+      - './.env'
+    ports:
+      - "8080:80"
+    volumes:
+      - wordpress:/var/www/html
+    networks:
+        - Inception
+    restart: always
+
+
