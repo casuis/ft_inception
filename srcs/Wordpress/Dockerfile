@@ -15,8 +15,6 @@ EXPOSE		9000
 
 COPY		./www.conf /etc/php/7.3/fpm/pool.d/
 
-COPY		./wp_config.sh .
-
 RUN		mkdir -p /var/run/php
 
 WORKDIR		/var/www/html
@@ -26,8 +24,11 @@ RUN		curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cl
 
 RUN     	chmod +x wp-cli.phar
 
-RUN     	mv wp-cli.phar /usr/local/bin/wp && wp core download --locale=fr_FR --allow-root && chown -R www-data:www-data /var/www/* && chmod -R 755 /var/www/*
+RUN     	mv wp-cli.phar /usr/local/bin/wp
 
+RUN		wp --info
 
-CMD		["sh", "/wp_config.sh"]
+COPY		./wp_config.sh .
+
+ENTRYPOINT	["bash", "wp_config.sh"]
 

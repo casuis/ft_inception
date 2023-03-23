@@ -1,0 +1,5 @@
+# ouverture d'un port via le parfeu iptables
+sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# fermetur du port via iptables
+sudo iptables -D INPUT -p tcp --dport 443 -J ACCEPT

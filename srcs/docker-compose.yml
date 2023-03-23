@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 networks:
   Inception:
@@ -27,7 +27,7 @@ services:
     image: mariadb
     container_name: mariadb
     env_file:
-      - './.env'
+      - "./.env"
     volumes:
       - db:/var/lib/mysql
     networks:
@@ -41,7 +41,7 @@ services:
     image: wordpress
     container_name: wordpress
     env_file:
-      - './.env'
+      - "./.env"
     volumes:
       - wordpress:/var/www/html
     networks:
@@ -52,12 +52,10 @@ services:
     depends_on:
       - wordpress
     build: ./Nginx/
-    image: nginx
     container_name: nginx
-    env_file: 
-      - './.env'
+    image: nginx
     ports:
-      - "8080:80"
+      - "443:443"
     volumes:
       - wordpress:/var/www/html
     networks:

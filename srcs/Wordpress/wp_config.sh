@@ -1,5 +1,6 @@
 #! /bin/bash
 
+wp core download --locale=fr_FR --allow-root
 sleep 2
 
 if [ -f /var/www/html/wp-config.php ]
@@ -10,10 +11,10 @@ else
 echo "===> create wp-config.php <==== "
 sleep 10
 
-wp core config  --dbname=$DB_NAME \
+wp core config  --dbname=$MYSQL_DB_NAME \
                 --dbuser=$WP_ADM \
                 --dbpass=$WP_ADM_PSWD \
-                --dbhost=$DB_HOST \
+		--dbhost=$MYSQL_DB_HOST \
                 --dbcharset=$WP_CHARSET \
                 --dbprefix=wp_ \
                 --dbcollate="utf8_general_ci" \
@@ -34,5 +35,8 @@ sleep 5
 wp user create $WP_USER $WP_USER_EMAIL --role=author --user_pass=$WP_USER_PSWD --allow-root
 
 fi
+chown -R www-data:www-data /var/www/* 
+chmod -R 755 /var/www/*
 echo "===> WORDPRESS IS UP <==="
+
 exec php-fpm7.3 -F -R
